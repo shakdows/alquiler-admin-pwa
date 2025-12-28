@@ -7,25 +7,24 @@ async function main() {
   try {
     const res = await fetch(API, { method: "GET" });
 
-    // 👇 AQUÍ VA LO QUE PREGUNTAS
+    // Leer como texto primero (debug real)
     const text = await res.text();
     estado.textContent = `HTTP ${res.status} ${res.statusText}`;
 
-    // si la respuesta está vacía
     if (!text) {
-      out.textContent = "(Respuesta vacía desde n8n)";
+      out.textContent = "(Respuesta vacía desde n8n. No hay JSON para parsear.)";
       return;
     }
 
-    // intentar parsear JSON
+    // Intentar parsear JSON
     try {
       const data = JSON.parse(text);
       out.textContent = JSON.stringify(data, null, 2);
-    } catch (err) {
+    } catch {
       out.textContent =
-        "NO ES JSON. Respuesta recibida:\n\n" + text.slice(0, 500);
+        "NO ES JSON. Respuesta recibida (primeros 800 chars):\n\n" +
+        text.slice(0, 800);
     }
-
   } catch (e) {
     estado.textContent = "Error de red / CORS";
     out.textContent = e.message;
