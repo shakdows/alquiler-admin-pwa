@@ -4,20 +4,27 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#111827" />
-  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="manifest" href="manifest.webmanifest?v=2" />
   <title>Control Alquiler (Admin)</title>
 </head>
+
 <body style="font-family:system-ui; padding:16px;">
   <h2>Control de Alquiler – Admin</h2>
+
   <p id="estado">Cargando...</p>
-  <pre id="out" style="background:#111827;color:#e5e7eb;padding:12px;border-radius:10px;overflow:auto;"></pre>
 
-  <script src="app.js?v=2"></script>
+  <pre id="out" style="background:#111827;color:#e5e7eb;padding:12px;border-radius:10px;overflow:auto;white-space:pre-wrap;"></pre>
+
+  <!-- Cargar JS al final y con cache-bust -->
+  <script src="app.js?v=debug3" defer></script>
+
   <script>
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=2');
-
+    // Registrar Service Worker sin romper la carga si falla
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js?v=2').catch(() => {});
+      });
+    }
   </script>
 </body>
 </html>
-
-
