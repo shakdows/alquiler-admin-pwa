@@ -2,29 +2,296 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#111827" />
-  <link rel="manifest" href="manifest.webmanifest?v=2" />
-  <title>Control Alquiler (Admin)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Calculadora de Créditos Nattiva</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#020617">
+
+  <!-- iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Nattiva">
+  <link rel="apple-touch-icon" href="./icon-512.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="./icon-512.png">
+
+  <style>
+    :root{
+      --font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      --shadow:rgba(15,23,42,0.35);
+      --blue:#e0f2fe;
+      --yellow:#fef9c3;
+      --orange:#ffedd5;
+      --orange2:#fde68a;
+      --red:#e11d48;
+      --red-dark:#7f1d1d;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+
+    body{
+      margin:0;
+      font-family:var(--font-family);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56,189,248,.25), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(244,114,182,.25), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(251,191,36,.15), transparent 55%),
+        #020617;
+      padding:20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .card{
+      background:#fff;
+      width:100%;
+      max-width:520px;
+      border-radius:28px;
+      padding:26px 22px 28px;
+      box-shadow:0 22px 55px var(--shadow);
+      border:1px solid rgba(148,163,184,.3);
+    }
+
+    .title{
+      text-align:center;
+      font-size:22px;
+      font-weight:900;
+      color:#0f172a;
+      margin:6px 0 22px;
+      letter-spacing:.02em;
+    }
+
+    .label{
+      font-size:11px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color:#94a3b8;
+      font-weight:700;
+      margin:18px 0 6px;
+    }
+
+    input{
+      width:100%;
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(148,163,184,.55);
+      font-size:16px;
+      outline:none;
+    }
+
+    input:focus{
+      border-color:rgba(225,29,72,.55);
+      box-shadow:0 0 0 4px rgba(225,29,72,.12);
+    }
+
+    button{
+      margin:26px auto 0;
+      display:block;
+      padding:14px 36px;
+      border-radius:999px;
+      background:linear-gradient(135deg,var(--red),var(--red-dark));
+      color:#fff;
+      border:0;
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:.1em;
+      cursor:pointer;
+      text-transform:uppercase;
+    }
+
+    .hide{display:none}
+
+    .bubble-blue{
+      margin:18px 0;
+      padding:22px 16px;
+      border-radius:26px;
+      background:linear-gradient(135deg,var(--blue),var(--yellow));
+      text-align:center;
+      font-size:36px;
+      font-weight:900;
+      color:#0f172a;
+    }
+
+    .bubble-blue span{
+      display:block;
+      font-size:11px;
+      letter-spacing:.18em;
+      font-weight:800;
+      margin-bottom:8px;
+      color:#1d4ed8;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:15px;
+    }
+
+    td{
+      padding:12px 0;
+      border-bottom:1px solid rgba(148,163,184,.25);
+      color:#0f172a;
+    }
+
+    td:last-child{
+      text-align:right;
+      font-weight:900;
+    }
+
+    .bubble-orange{
+      margin:20px 0 10px;
+      padding:20px 16px;
+      border-radius:26px;
+      background:linear-gradient(135deg,var(--orange),var(--orange2));
+      text-align:center;
+      font-size:28px;
+      font-weight:900;
+      color:#78350f;
+    }
+
+    /* ✅ Título dentro de la burbuja naranja */
+    .bubble-orange span{
+      display:block;
+      font-size:11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-weight:900;
+      margin-bottom:8px;
+      color:#92400e;
+    }
+
+    .note{
+      font-size:12px;
+      color:#64748b;
+      text-align:center;
+      margin-top:8px;
+    }
+
+    .error{
+      color:#b91c1c;
+      font-weight:800;
+      text-align:center;
+      margin-top:10px;
+      min-height:18px;
+    }
+  </style>
 </head>
 
-<body style="font-family:system-ui; padding:16px;">
-  <h2>Control de Alquiler – Admin</h2>
+<body>
 
-  <p id="estado">Cargando...</p>
+<!-- FORM -->
+<div class="card" id="form">
+  <h1 class="title">Calculadora de Créditos Nattiva</h1>
 
-  <pre id="out" style="background:#111827;color:#e5e7eb;padding:12px;border-radius:10px;overflow:auto;white-space:pre-wrap;"></pre>
+  <div class="label">Cliente</div>
+  <input id="cliente" placeholder="Ej: Juan Pérez" autocomplete="off">
 
-  <!-- Cargar JS al final y con cache-bust -->
-  <script src="app.js?v=debug3" defer></script>
+  <div class="label">Precio del inmueble (S/)</div>
+  <input id="precio" inputmode="numeric" placeholder="Ej: 500,000" autocomplete="off">
 
-  <script>
-    // Registrar Service Worker sin romper la carga si falla
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=2').catch(() => {});
-      });
-    }
-  </script>
+  <div class="label">Cuota inicial (%)</div>
+  <input id="cuota" inputmode="decimal" placeholder="Ej: 10" autocomplete="off">
+
+  <div class="label">TEA (%)</div>
+  <input id="tea" inputmode="decimal" placeholder="Ej: 8" autocomplete="off">
+
+  <div class="label">Plazo (años)</div>
+  <input id="plazo" inputmode="numeric" placeholder="Ej: 20" autocomplete="off">
+
+  <button type="button" onclick="calcular()">Calcular</button>
+  <div class="error" id="err"></div>
+</div>
+
+<!-- RESULTADO -->
+<div class="card hide" id="result">
+  <h1 class="title">Calculadora de Créditos Nattiva</h1>
+
+  <div class="bubble-blue">
+    <span>CUOTA MENSUAL ESTIMADA</span>
+    <div id="cuotaMensual"></div>
+  </div>
+
+  <table>
+    <tr><td>Precio del inmueble</td><td id="outPrecio"></td></tr>
+    <tr><td>Cuota inicial</td><td id="outCuota"></td></tr>
+    <tr><td>Monto a financiar</td><td id="outMonto"></td></tr>
+    <tr><td>Plazo</td><td id="outPlazo"></td></tr>
+    <tr><td>TEA</td><td id="outTea"></td></tr>
+  </table>
+
+  <!-- ✅ Burbuja naranja con título + monto -->
+  <div class="bubble-orange">
+    <span>INGRESOS APROXIMADOS DEL CLIENTE</span>
+    <div id="outIngreso"></div>
+  </div>
+
+  <div class="note">Estas cifras son referenciales y pueden variar.</div>
+
+  <button type="button" onclick="resetear()">Nueva consulta</button>
+</div>
+
+<script>
+  const nf = new Intl.NumberFormat('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
+  const nfi = new Intl.NumberFormat('en-US',{maximumFractionDigits:0});
+
+  function onlyDigits(s){ return (s || '').toString().replace(/[^\d]/g,''); }
+  function num(v){ return parseFloat((v || '').toString().replace(/,/g,'')) || 0; }
+
+  // 500000 -> 500,000 (sin decimales)
+  precio.addEventListener('input', () => {
+    const d = onlyDigits(precio.value);
+    precio.value = d ? nfi.format(parseInt(d,10)) : '';
+  });
+
+  function calcular(){
+    err.textContent='';
+    const p = num(precio.value);
+    const c = num(cuota.value);
+    const t = num(tea.value);
+    const a = parseInt(plazo.value) || 0;
+
+    if(!p || !c || !t || !a) return err.textContent='Completa todos los campos';
+
+    const ci = p*(c/100);
+    const mf = p-ci;
+    const r  = Math.pow(1+t/100,1/12)-1;
+    const m  = a*12;
+
+    const cm = (r === 0) ? (mf/m) : (mf*(r/(1-Math.pow(1+r,-m))));
+    const ing = cm/0.3;
+
+    cuotaMensual.textContent='S/ '+nf.format(cm);
+    outPrecio.textContent='S/ '+nf.format(p);
+    outCuota.textContent='S/ '+nf.format(ci);
+    outMonto.textContent='S/ '+nf.format(mf);
+    outPlazo.textContent=a+' años';
+    outTea.textContent=t+' %';
+
+    // Solo el monto (el título ya está en el HTML)
+    outIngreso.textContent='S/ '+nf.format(ing);
+
+    form.classList.add('hide');
+    result.classList.remove('hide');
+    window.scrollTo(0,0);
+  }
+
+  function resetear(){
+    form.classList.remove('hide');
+    result.classList.add('hide');
+    cliente.value=precio.value=cuota.value=tea.value=plazo.value='';
+    err.textContent='';
+  }
+
+  // Service Worker
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  }
+</script>
+
 </body>
 </html>
